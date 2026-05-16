@@ -1,0 +1,34 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Cairo:wght@400;600;700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+:root {
+  --navy-950: #060D24;
+  --navy-900: #0D1B4B;
+  --navy-800: #132266;
+  --navy-700: #1A2D7F;
+
+  --sky-600:  #0A7EB5;
+  --sky-400:  #22B0ED;
+  --sky-100:  #D6F0FC;
+  --sky-50:   #EBF7FD;
+
+  --gold-700: #8B6400;
+  --gold-500: #D4960A;
+  --gold-400: #EFB31A;
+  --gold-100: #FEF3C7;
+
+  --font-display: 'Playfair Display', serif;
+  --font-arabic:  'Cairo', sans-serif;
+  --font-body:    'DM Sans', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: #ffffff;
+  color: var(--navy-900);
+}
