@@ -1,0 +1,290 @@
+import { writeFileSync } from 'fs';
+
+const schema = `generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id              String           @id @default(cuid())
+  name            String?
+  email           String           @unique
+  phone           String?
+  password        String?
+  role            Role             @default(CUSTOMER)
+  createdAt       DateTime         @default(now())
+  bookings        Booking[]
+  consultations   Consultation[]
+  serviceRequests ServiceRequest[]
+  messages        RequestMessage[]
+}
+
+model Package {
+  id          String    @id @default(cuid())
+  title       String
+  country     String
+  duration    String
+  price       Float
+  description String?
+  image       String?
+  tag         String?
+  visible     Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  endDate     DateTime?
+  startDate   DateTime?
+  bookings    Booking[]
+}
+
+model Booking {
+  id        String        @id @default(cuid())
+  userId    String
+  packageId String
+  status    BookingStatus @default(PENDING)
+  total     Float
+  createdAt DateTime      @default(now())
+  package   Package       @relation(fields: [packageId], references: [id])
+  user      User          @relation(fields: [userId], references: [id])
+}
+
+model Consultation {
+  id           String           @id @default(cuid())
+  userId       String?
+  name         String
+  phone        String
+  service      String
+  message      String?
+  status       String           @default("pending")
+  paid         Boolean          @default(false)
+  serviceSlug  String?
+  assignedTo   String?
+  internalNote String?
+  createdAt    DateTime         @default(now())
+  user         User?            @relation(fields: [userId], references: [id])
+  messages     RequestMessage[]
+}
+
+model ServiceRequest {
+  id           String           @id @default(cuid())
+  userId       String?
+  name         String
+  phone        String
+  serviceSlug  String
+  serviceTitle String
+  message      String?
+  status       String           @default("pending")
+  isRead       Boolean          @default(false)
+  assignedTo   String?
+  internalNote String?
+  createdAt    DateTime         @default(now())
+  user         User?            @relation(fields: [userId], references: [id])
+  messages     RequestMessage[]
+}
+
+model ContactMessage {
+  id          String   @id @default(cuid())
+  name        String
+  phone       String
+  service     String?
+  serviceSlug String?
+  message     String?
+  createdAt   DateTime @default(now())
+  isRead      Boolean  @default(false)
+  assignedTo  String?
+}
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id                String   @id @default("main")
+  logoUrl           String   @default("")
+  address           String   @default("")
+  mapsUrl           String   @default("")
+  workingHours      String   @default("")
+  updatedAt         DateTime @updatedAt
+  emails            String[]
+  phones            String[]
+  whatsapp          String[]
+  facebook          String[]
+  instagram         String[]
+  tiktok            String[]
+  youtube           String[]
+  agencyName        String   @default("")
+  agencyDescription String   @default("")
+  phonePrimary      String   @default("")
+  phoneWhatsapp     String   @default("")
+  email             String   @default("")
+  consultationPrice String   @default("2500")
+  currency          String   @default("DZD")
+}
+
+model Service {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  icon         String   @default("")
+  color        String   @default("#0A7EB5")
+  image        String   @default("")
+  imageLabel   String   @default("")
+  description  String   @default("")
+  details      String[]
+  destinations String[]
+  visible      Boolean  @default(true)
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Staff {
+  id          String         @id @default(cuid())
+  name        String
+  email       String         @unique
+  password    String
+  phone       String?
+  active      Boolean        @default(true)
+  permissions String[]
+  createdAt   DateTime       @default(now())
+  messages    StaffMessage[]
+}
+
+model StaffMessage {
+  id          String   @id @default(cuid())
+  staffId     String
+  toName      String
+  toPhone     String
+  toEmail     String?
+  subject     String
+  body        String
+  serviceSlug String?
+  sourceType  String
+  sourceId    String?
+  sentAt      DateTime @default(now())
+  staff       Staff    @relation(fields: [staffId], references: [id])
+}
+
+model FlightRequest {
+  id           String           @id @default(cuid())
+  name         String
+  phone        String
+  email        String?
+  from         String
+  to           String
+  departDate   String
+  returnDate   String?
+  tripType     String           @default("round")
+  cabin        String           @default("economy")
+  adults       Int              @default(1)
+  children     Int              @default(0)
+  infants      Int              @default(0)
+  payment      String           @default("cash")
+  notes        String?
+  status       String           @default("pending")
+  assignedTo   String?
+  isRead       Boolean          @default(false)
+  internalNote String?
+  createdAt    DateTime         @default(now())
+  messages     RequestMessage[]
+}
+
+model HotelRequest {
+  id           String           @id @default(cuid())
+  name         String
+  phone        String
+  email        String?
+  city         String
+  hotelName    String?
+  checkIn      String
+  checkOut     String
+  rooms        Int              @default(1)
+  adults       Int              @default(2)
+  children     Int              @default(0)
+  stars        String?
+  payment      String           @default("cash")
+  notes        String?
+  status       String           @default("pending")
+  assignedTo   String?
+  isRead       Boolean          @default(false)
+  internalNote String?
+  createdAt    DateTime         @default(now())
+  messages     RequestMessage[]
+}
+
+model Hotel {
+  id            String   @id @default(cuid())
+  name          String
+  city          String
+  country       String   @default("\u0627\u0644\u062c\u0632\u0627\u0626\u0631")
+  stars         Int      @default(3)
+  pricePerNight Float
+  currency      String   @default("DZD")
+  source        String   @default("direct")
+  images        String[]
+  amenities     String[]
+  description   String   @default("")
+  visible       Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model SiteConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
+
+model RequestMessage {
+  id               String          @id @default(cuid())
+  requestType      String
+  senderType       String
+  senderId         String
+  senderName       String
+  body             String
+  isRead           Boolean         @default(false)
+  createdAt        DateTime        @default(now())
+  flightRequest    FlightRequest?  @relation(fields: [flightRequestId], references: [id])
+  flightRequestId  String?
+  hotelRequest     HotelRequest?   @relation(fields: [hotelRequestId], references: [id])
+  hotelRequestId   String?
+  consultation     Consultation?   @relation(fields: [consultationId], references: [id])
+  consultationId   String?
+  serviceRequest   ServiceRequest? @relation(fields: [serviceRequestId], references: [id])
+  serviceRequestId String?
+  user             User?           @relation(fields: [userId], references: [id])
+  userId           String?
+}
+
+model InternalMessage {
+  id         String   @id @default(cuid())
+  staffId    String
+  sourceType String
+  sourceId   String
+  senderType String
+  senderName String
+  body       String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  STAFF
+  CUSTOMER
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+`;
+
+writeFileSync('prisma/schema.prisma', schema, 'utf8');
+console.log('Schema written OK - lines: ' + schema.split('\n').length);

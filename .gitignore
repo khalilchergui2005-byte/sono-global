@@ -39,3 +39,15 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+/src/generated/prisma
+# temp dev files
+cookies.txt
+footer_full.txt
+schema_full.txt
+skills-lock.json
+.agents/
+fix-*.js
+write-*.js
+create-admin-pages.js
+prisma.config.ts
