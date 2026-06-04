@@ -16,25 +16,10 @@ async function verify(token: string, secret: string) {
   }
 }
 
-async function checkOnboardingComplete(req: NextRequest): Promise<boolean> {
-  try {
-    const url = new URL('/api/admin/onboarding-status', req.nextUrl.origin);
-    const res = await fetch(url.toString());
-    if (!res.ok) return false;
-    const data = (await res.json()) as { complete?: boolean };
-    return data.complete === true;
-  } catch {
-    return false;
-  }
-}
-
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const secret = process.env.JWT_SECRET!;
 
-  // ══════════════════════════════════
-  // Staff routes
-  // ══════════════════════════════════
   if (pathname.startsWith('/staff')) {
     if (PUBLIC_STAFF_PATHS.some(p => pathname.startsWith(p))) {
       return NextResponse.next();
@@ -54,23 +39,14 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // ══════════════════════════════════
-  // Non-admin routes — pass through
-  // ══════════════════════════════════
   if (!pathname.startsWith('/admin')) {
     return NextResponse.next();
   }
 
-  // ══════════════════════════════════
-  // Public admin paths — no auth needed
-  // ══════════════════════════════════
   if (PUBLIC_ADMIN_PATHS.some(p => pathname.startsWith(p))) {
     return NextResponse.next();
   }
 
-  // ══════════════════════════════════
-  // Admin auth check
-  // ══════════════════════════════════
   const token = req.cookies.get('admin_token')?.value;
   if (!token) {
     const url = req.nextUrl.clone();
@@ -85,19 +61,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // ══════════════════════════════════
-  // O2 — Onboarding check
-  // إذا الإدمين مسجّل لكن لم يكمل الإعداد
-  // نوجّهه لـ onboarding إلا إذا كان فيه
-  // ══════════════════════════════════
-  const isOnboardingPath = pathname.startsWith('/admin/onboarding');
-  if (!isOnboardingPath) {
-    const complete = await checkOnboardingComplete(req);
-    if (!complete) {
-      const url = req.nextUrl.clone();
-      url.pathname = '/admin/onboarding';
-      return NextResponse.redirect(url);
-    }
+  const onboardingDone = req.cookies.get('onboarding_complete')?.value;
+  if (onboardingDone !== 'true') {
+    const url = req.nextUrl.clone();
+    url.pathname = '/admin/onboarding';
+    return NextResponse.redirect(url);
   }
 
   return NextResponse.next();

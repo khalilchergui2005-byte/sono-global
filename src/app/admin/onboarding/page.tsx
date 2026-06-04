@@ -150,6 +150,7 @@ export default function OnboardingPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ onboarding_complete: 'true' }),
     });
+    await fetch('/api/admin/complete-onboarding', { method: 'POST' });
     setSaving(false);
     router.push('/admin/dashboard');
   };
