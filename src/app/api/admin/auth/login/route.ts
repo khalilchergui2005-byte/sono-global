@@ -115,6 +115,13 @@ export async function POST(req: NextRequest) {
       path:     '/',
     });
 
+    res.cookies.set('onboarding_complete', onboardingComplete ? 'true' : 'false', {
+      httpOnly: true,
+      secure:   process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge:   60 * 60 * 24 * 30,
+      path:     '/',
+    });
     return res;
   } catch (e) {
     console.error('[admin/auth/login]', e);
