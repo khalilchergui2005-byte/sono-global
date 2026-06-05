@@ -1,12 +1,7 @@
 import type { NextConfig } from "next";
-
 const nextConfig: NextConfig = {
-  env: {
-    JWT_SECRET: process.env.JWT_SECRET,
-  },
   poweredByHeader: false,
   compress: true,
-
   images: {
     remotePatterns: [
       { protocol: 'https', hostname: '**.supabase.co' },
@@ -15,7 +10,6 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '**.amazonaws.com' },
     ],
   },
-
   async headers() {
     return [
       {
@@ -38,7 +32,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https:",
-              "connect-src 'self' https://api.amadeus.com https://pay.chargily.net https://*.supabase.co https://*.supabase.in",
+              "connect-src 'self' https://api.amadeus.com https://pay.chargily.net https://pay.chargily.dz https://*.supabase.co https://*.supabase.in",
               "frame-ancestors 'none'",
             ].join('; '),
           },
@@ -52,14 +46,11 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-
   async rewrites() {
     return [];
   },
-
   experimental: {
     optimizePackageImports: ['@prisma/client'],
   },
 };
-
 export default nextConfig;

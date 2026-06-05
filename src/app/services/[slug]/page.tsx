@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 
@@ -58,7 +58,7 @@ export default function ServiceDetailPage() {
   }, [slug]);
 
   useEffect(() => {
-    fetch('/api/admin/settings')
+    fetch('/api/settings')
       .then(r => r.json())
       .then(d => { if (d?.consultationPrice) setPrice(d.consultationPrice); })
       .catch(() => {});

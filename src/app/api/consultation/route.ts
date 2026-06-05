@@ -1,6 +1,31 @@
 ﻿import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { verifyAdmin } from '@/lib/auth';
+import { sendConsultationNotification } from '@/lib/mailer';
+
+const attempts = new Map<string, { count: number; resetAt: number }>();
+const MAX    = 5;
+const WINDOW = 60 * 60 * 1000;
+
+function getIP(req: NextRequest): string {
+  return (
+    req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
+    req.headers.get('x-real-ip') ??
+    'unknown'
+  );
+}
+
+function checkRateLimit(ip: string): boolean {
+  const now    = Date.now();
+  const record = attempts.get(ip);
+  if (!record || now > record.resetAt) {
+    attempts.set(ip, { count: 1, resetAt: now + WINDOW });
+    return true;
+  }
+  if (record.count >= MAX) return false;
+  record.count += 1;
+  return true;
+}
 
 export async function GET(req: NextRequest) {
   const auth = verifyAdmin(req);
@@ -23,12 +48,21 @@ export async function GET(req: NextRequest) {
       },
     });
     return NextResponse.json(consultations);
-  } catch {
+  } catch (error) {
+    console.error('[GET /api/consultation]', error);
     return NextResponse.json({ error: 'حدث خطأ' }, { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
+  const ip = getIP(req);
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: 'تجاوزت الحد المسموح — حاول بعد ساعة' },
+      { status: 429 }
+    );
+  }
+
   try {
     const body: unknown = await req.json();
     if (!body || typeof body !== 'object' || Array.isArray(body)) {
@@ -61,11 +95,19 @@ export async function POST(req: NextRequest) {
       data: {
         name:        name.trim(),
         phone:       phone.trim(),
-        service:     typeof service    === 'string' ? service.trim()    : '',
+        service:     typeof service     === 'string' ? service.trim()     : '',
         serviceSlug: typeof serviceSlug === 'string' ? serviceSlug.trim() : '',
-        message:     typeof message    === 'string' ? message.trim()    : '',
+        message:     typeof message     === 'string' ? message.trim()     : '',
       },
       select: { id: true },
+    });
+
+    // إرسال إيميل للأدمن — silent fail
+    void sendConsultationNotification({
+      customerName:   name.trim(),
+      customerPhone:  phone.trim(),
+      subject:        typeof service === 'string' ? service.trim() : 'استشارة عامة',
+      consultationId: consultation.id,
     });
 
     return NextResponse.json({ success: true, id: consultation.id });

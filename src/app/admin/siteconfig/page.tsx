@@ -6,9 +6,16 @@ type Config = {
   amadeus_client_id:       string;
   amadeus_client_secret:   string;
   amadeus_markup_percent:  string;
+  eur_to_dzd_rate:         string;
   chargily_api_key:        string;
   chargily_webhook_secret: string;
   payment_methods:         string;
+  smtp_host:               string;
+  smtp_port:               string;
+  smtp_user:               string;
+  smtp_pass:               string;
+  smtp_from_name:          string;
+  admin_email:             string;
 };
 
 const PAYMENT_OPTIONS = [
@@ -27,11 +34,14 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) {
   return (
     <div style={{ marginBottom: '1rem' }}>
       <label style={{ display: 'block', color: 'rgba(255,255,255,0.5)', fontSize: '12px', fontWeight: 600, marginBottom: '6px' }}>{label}</label>
       {children}
+      {hint && (
+        <p style={{ color: 'rgba(255,255,255,0.25)', fontSize: '11px', margin: '5px 0 0' }}>{hint}</p>
+      )}
     </div>
   );
 }
@@ -106,9 +116,16 @@ export default function SiteConfigPage() {
     amadeus_client_id:       '',
     amadeus_client_secret:   '',
     amadeus_markup_percent:  '10',
+    eur_to_dzd_rate:         '260',
     chargily_api_key:        '',
     chargily_webhook_secret: '',
     payment_methods:         'cash,cib,bank_transfer,ccp',
+    smtp_host:               'smtp.gmail.com',
+    smtp_port:               '587',
+    smtp_user:               '',
+    smtp_pass:               '',
+    smtp_from_name:          'Sono Global Travel',
+    admin_email:             '',
   });
   const [loading, setLoading] = useState(true);
   const [saving,  setSaving]  = useState(false);
@@ -151,6 +168,12 @@ export default function SiteConfigPage() {
   );
 
   const activePayments = config.payment_methods.split(',').filter(Boolean);
+
+  // معاينة حية للحساب
+  const exampleEur    = 100;
+  const rate          = parseFloat(config.eur_to_dzd_rate)   || 260;
+  const markup        = parseFloat(config.amadeus_markup_percent) || 0;
+  const exampleResult = Math.ceil(exampleEur * rate * (1 + markup / 100));
 
   return (
     <div style={{ padding: '2rem', fontFamily: 'Cairo,sans-serif', direction: 'rtl', maxWidth: '760px' }}>
@@ -208,7 +231,32 @@ export default function SiteConfigPage() {
             placeholder="أدخل Amadeus Client Secret"
           />
         </Field>
-        <Field label="نسبة الربح على سعر Amadeus (%)">
+      </Section>
+
+      <Section title="Amadeus — تسعير العملة">
+        <Field
+          label="سعر صرف اليورو (EUR → DZD)"
+          hint="مثال: 260 يعني 1 EUR = 260 دينار جزائري"
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <input
+              type="number"
+              min="1"
+              step="1"
+              value={config.eur_to_dzd_rate}
+              onChange={e => set('eur_to_dzd_rate', e.target.value)}
+              style={{ ...inputStyle, maxWidth: '160px' }}
+            />
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
+              DZD لكل EUR
+            </span>
+          </div>
+        </Field>
+
+        <Field
+          label="نسبة الربح على سعر Amadeus (%)"
+          hint="مثال: 10 تعني إضافة 10% فوق السعر بعد التحويل"
+        >
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <input
               type="number"
@@ -219,17 +267,31 @@ export default function SiteConfigPage() {
               onChange={e => set('amadeus_markup_percent', e.target.value)}
               style={{ ...inputStyle, maxWidth: '160px' }}
             />
-            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>
-              مثال: القيمة 10 تعني السعر × 1.10
-            </span>
+            <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '12px' }}>%</span>
           </div>
         </Field>
+
+        {/* معاينة حية */}
+        <div style={{
+          background: 'rgba(245,166,35,0.06)',
+          border: '1px solid rgba(245,166,35,0.2)',
+          borderRadius: '10px',
+          padding: '12px 16px',
+          marginTop: '0.5rem',
+        }}>
+          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', margin: '0 0 6px', fontWeight: 600 }}>
+            معاينة الحساب (مثال: رحلة بـ 100 EUR)
+          </p>
+          <p style={{ color: '#f5a623', fontSize: '15px', fontWeight: 700, margin: 0 }}>
+            100 EUR × {rate} × (1 + {markup}%) = {exampleResult.toLocaleString('ar-DZ')} DZD
+          </p>
+        </div>
       </Section>
 
       <Section title="Chargily Pay — بيانات الاعتماد">
         <div style={{ background: 'rgba(245,166,35,0.06)', border: '1px solid rgba(245,166,35,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '1rem' }}>
           <p style={{ color: 'rgba(245,166,35,0.8)', fontSize: '12px', margin: 0 }}>
- احصل على بيانات الاعتماد من لوحة تحكم Chargily Pay على{' '}
+            احصل على بيانات الاعتماد من لوحة تحكم Chargily Pay على{' '}
             <a href="https://pay.chargily.net" target="_blank" rel="noreferrer" style={{ color: '#f5a623', textDecoration: 'underline' }}>pay.chargily.net</a>
           </p>
         </div>
@@ -245,6 +307,68 @@ export default function SiteConfigPage() {
             value={config.chargily_webhook_secret}
             onChange={v => set('chargily_webhook_secret', v)}
             placeholder="whsec_..."
+          />
+        </Field>
+      </Section>
+
+      <Section title="إعدادات البريد الإلكتروني (SMTP)">
+        <div style={{ background: 'rgba(10,126,181,0.06)', border: '1px solid rgba(10,126,181,0.2)', borderRadius: '10px', padding: '10px 14px', marginBottom: '1rem' }}>
+          <p style={{ color: 'rgba(10,126,181,0.9)', fontSize: '12px', margin: 0 }}>
+            Gmail: استخدم App Password من إعدادات Google — وليس كلمة المرور العادية
+          </p>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <Field label="SMTP Host" hint="مثال: smtp.gmail.com">
+            <input
+              type="text"
+              value={config.smtp_host}
+              onChange={e => set('smtp_host', e.target.value)}
+              placeholder="smtp.gmail.com"
+              style={inputStyle}
+            />
+          </Field>
+          <Field label="SMTP Port" hint="عادةً 587">
+            <input
+              type="number"
+              value={config.smtp_port}
+              onChange={e => set('smtp_port', e.target.value)}
+              placeholder="587"
+              style={inputStyle}
+            />
+          </Field>
+        </div>
+        <Field label="البريد الإلكتروني (SMTP User)">
+          <input
+            type="email"
+            value={config.smtp_user}
+            onChange={e => set('smtp_user', e.target.value)}
+            placeholder="your@gmail.com"
+            style={inputStyle}
+          />
+        </Field>
+        <Field label="كلمة المرور (App Password)">
+          <SecretInput
+            value={config.smtp_pass}
+            onChange={v => set('smtp_pass', v)}
+            placeholder="xxxx xxxx xxxx xxxx"
+          />
+        </Field>
+        <Field label="اسم المرسل" hint="الاسم الذي يظهر في الإيميل">
+          <input
+            type="text"
+            value={config.smtp_from_name}
+            onChange={e => set('smtp_from_name', e.target.value)}
+            placeholder="Sono Global Travel"
+            style={inputStyle}
+          />
+        </Field>
+        <Field label="إيميل الاستلام (Admin Email)" hint="الإيميل الذي يستلم إشعارات الطلبات الجديدة">
+          <input
+            type="email"
+            value={config.admin_email}
+            onChange={e => set('admin_email', e.target.value)}
+            placeholder="admin@youragency.com"
+            style={inputStyle}
           />
         </Field>
       </Section>

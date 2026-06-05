@@ -11,7 +11,8 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: 'desc' },
     });
     return NextResponse.json(consultations);
-  } catch {
+  } catch (error) {
+    console.error('[GET /api/admin/consultations]', error);
     return NextResponse.json({ error: 'حدث خطأ' }, { status: 500 });
   }
 }

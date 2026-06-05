@@ -50,6 +50,8 @@ model Booking {
   paymentStatus       String        @default("pending")
   chargilyCheckoutId  String?
   chargilyPaymentId   String?
+  lockedPrice         Float?
+  priceLockedAt       DateTime?
   createdAt           DateTime      @default(now())
   package             Package       @relation(fields: [packageId], references: [id])
   user                User?          @relation(fields: [userId], references: [id])

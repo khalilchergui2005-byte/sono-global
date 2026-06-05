@@ -1,23 +1,33 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { verifyAdmin } from '@/lib/auth';
+import { verifyStaffOrAdmin } from '@/lib/auth';
 
 export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const admin = await verifyAdmin(req);
-  if (!admin) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  const auth = verifyStaffOrAdmin(req);
+  if (auth instanceof NextResponse) return auth;
 
-  const { id } = await params;
+  try {
+    const { id } = await params;
 
-  const existing = await db.requestMessage.findUnique({ where: { id }, select: { id: true } });
-  if (!existing) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    const existing = await db.requestMessage.findUnique({
+      where: { id },
+      select: { id: true },
+    });
+    if (!existing) {
+      return NextResponse.json({ error: 'Not found' }, { status: 404 });
+    }
 
-  await db.requestMessage.update({
-    where: { id },
-    data: { isRead: true },
-  });
+    await db.requestMessage.update({
+      where: { id },
+      data: { isRead: true },
+    });
 
-  return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error('[PUT /api/request-messages/[id]]', err);
+    return NextResponse.json({ error: 'خطأ في الخادم' }, { status: 500 });
+  }
 }

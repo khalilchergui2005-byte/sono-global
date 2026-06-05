@@ -3,17 +3,21 @@ import { db } from '@/lib/db';
 import { verifyToken, getTokenFromHeader } from '@/lib/auth';
 
 interface CreatePaymentBody {
-  packageId: string;
+  packageId:     string;
   paymentMethod: string;
-  passengers?: number;
-  guestName?: string;
-  guestPhone?: string;
+  passengers?:   number;
+  guestName?:    string;
+  guestPhone?:   string;
+  lockedPrice?:  number;
+  priceLockedAt?: string;
 }
 
 interface ChargilyCheckoutResponse {
-  id: string;
+  id:           string;
   checkout_url: string;
 }
+
+const LOCK_DURATION_MS = 10 * 60 * 1000;
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,10 +27,7 @@ export async function POST(req: NextRequest) {
     if (token) {
       const payload = verifyToken(token);
       if (!payload) {
-        return NextResponse.json(
-          { error: '\u0637\u0644\u0628 \u063a\u064a\u0631 \u0645\u0635\u0631\u062d \u0628\u0647' },
-          { status: 401 }
-        );
+        return NextResponse.json({ error: 'طلب غير مصرح به' }, { status: 401 });
       }
       userId = payload.userId;
     }
@@ -35,17 +36,11 @@ export async function POST(req: NextRequest) {
     try {
       body = await req.json();
     } catch {
-      return NextResponse.json(
-        { error: '\u0628\u064a\u0627\u0646\u0627\u062a \u063a\u064a\u0631 \u0635\u0627\u0644\u062d\u0629' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'بيانات غير صالحة' }, { status: 400 });
     }
 
     if (!body || typeof body !== 'object') {
-      return NextResponse.json(
-        { error: '\u0628\u064a\u0627\u0646\u0627\u062a \u063a\u064a\u0631 \u0635\u0627\u0644\u062d\u0629' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'بيانات غير صالحة' }, { status: 400 });
     }
 
     const {
@@ -54,28 +49,21 @@ export async function POST(req: NextRequest) {
       passengers,
       guestName,
       guestPhone,
+      lockedPrice,
+      priceLockedAt,
     } = body as CreatePaymentBody;
 
     if (!userId) {
       if (!guestName || typeof guestName !== 'string' || guestName.trim().length === 0) {
-        return NextResponse.json(
-          { error: '\u0627\u0644\u0627\u0633\u0645 \u0645\u0637\u0644\u0648\u0628' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: 'الاسم مطلوب' }, { status: 400 });
       }
       if (!guestPhone || typeof guestPhone !== 'string' || guestPhone.trim().length === 0) {
-        return NextResponse.json(
-          { error: '\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062a\u0641 \u0645\u0637\u0644\u0648\u0628' },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: 'رقم الهاتف مطلوب' }, { status: 400 });
       }
     }
 
     if (!packageId || typeof packageId !== 'string' || packageId.trim().length === 0) {
-      return NextResponse.json(
-        { error: 'packageId \u0645\u0637\u0644\u0648\u0628' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'packageId مطلوب' }, { status: 400 });
     }
 
     const paymentConfig = await db.siteConfig.findUnique({
@@ -87,7 +75,7 @@ export async function POST(req: NextRequest) {
     if (paymentConfig?.value) {
       try {
         const parsed: unknown = JSON.parse(paymentConfig.value);
-        if (Array.isArray(parsed) && parsed.every((x) => typeof x === 'string')) {
+        if (Array.isArray(parsed) && parsed.every(x => typeof x === 'string')) {
           allowedMethods = parsed as string[];
         }
       } catch {
@@ -96,10 +84,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (!paymentMethod || !allowedMethods.includes(paymentMethod)) {
-      return NextResponse.json(
-        { error: '\u0637\u0631\u064a\u0642\u0629 \u0627\u0644\u062f\u0641\u0639 \u063a\u064a\u0631 \u0645\u0642\u0628\u0648\u0644\u0629' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'طريقة الدفع غير مقبولة' }, { status: 400 });
     }
 
     if (passengers !== undefined) {
@@ -110,7 +95,7 @@ export async function POST(req: NextRequest) {
         passengers > 20
       ) {
         return NextResponse.json(
-          { error: '\u0639\u062f\u062f \u0627\u0644\u0645\u0633\u0627\u0641\u0631\u064a\u0646 \u064a\u062c\u0628 \u0623\u0646 \u064a\u0643\u0648\u0646 \u0628\u064a\u0646 1 \u0648 20' },
+          { error: 'عدد المسافرين يجب أن يكون بين 1 و 20' },
           { status: 400 }
         );
       }
@@ -118,30 +103,47 @@ export async function POST(req: NextRequest) {
 
     const pkg = await db.package.findUnique({
       where: { id: packageId.trim() },
-      select: {
-        id: true,
-        title: true,
-        price: true,
-        visible: true,
-      },
+      select: { id: true, title: true, price: true, visible: true },
     });
 
     if (!pkg) {
-      return NextResponse.json(
-        { error: '\u0627\u0644\u0628\u0627\u0642\u0629 \u063a\u064a\u0631 \u0645\u0648\u062c\u0648\u062f\u0629' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'الباقة غير موجودة' }, { status: 404 });
     }
 
     if (!pkg.visible) {
-      return NextResponse.json(
-        { error: '\u0627\u0644\u0628\u0627\u0642\u0629 \u063a\u064a\u0631 \u0645\u062a\u0627\u062d\u0629 \u062d\u0627\u0644\u064a\u0627' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'الباقة غير متاحة حالياً' }, { status: 400 });
+    }
+
+    // فحص Price Lock
+    let finalPrice = pkg.price;
+
+    if (lockedPrice !== undefined && priceLockedAt !== undefined) {
+      const lockedAt = new Date(priceLockedAt);
+      const now      = new Date();
+
+      if (isNaN(lockedAt.getTime())) {
+        return NextResponse.json({ error: 'بيانات السعر المقفل غير صالحة' }, { status: 400 });
+      }
+
+      if (now.getTime() - lockedAt.getTime() > LOCK_DURATION_MS) {
+        return NextResponse.json(
+          { error: 'انتهت صلاحية السعر — يرجى تحديث الصفحة والمحاولة مجدداً', code: 'PRICE_LOCK_EXPIRED' },
+          { status: 409 }
+        );
+      }
+
+      if (typeof lockedPrice !== 'number' || lockedPrice !== pkg.price) {
+        return NextResponse.json(
+          { error: 'تغير سعر الباقة — يرجى تحديث الصفحة والمحاولة مجدداً', code: 'PRICE_CHANGED' },
+          { status: 409 }
+        );
+      }
+
+      finalPrice = lockedPrice;
     }
 
     const passengersCount = passengers ?? 1;
-    const total = pkg.price * passengersCount;
+    const total           = finalPrice * passengersCount;
 
     const siteSettings = await db.siteSettings.findUnique({
       where: { id: 'main' },
@@ -157,24 +159,23 @@ export async function POST(req: NextRequest) {
       });
 
       if (!apiKeyRecord?.value || apiKeyRecord.value.trim().length === 0) {
-        return NextResponse.json(
-          { error: '\u062e\u062f\u0645\u0629 \u0627\u0644\u062f\u0641\u0639 \u063a\u064a\u0631 \u0645\u0641\u0639\u0644\u0629 \u062d\u0627\u0644\u064a\u0627' },
-          { status: 503 }
-        );
+        return NextResponse.json({ error: 'خدمة الدفع غير مفعلة حالياً' }, { status: 503 });
       }
 
       const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
 
       const booking = await db.booking.create({
         data: {
-          userId: userId,
-          guestName: userId ? null : (guestName ?? null),
-          guestPhone: userId ? null : (guestPhone ?? null),
-          packageId: pkg.id,
+          userId:        userId,
+          guestName:     userId ? null : (guestName ?? null),
+          guestPhone:    userId ? null : (guestPhone ?? null),
+          packageId:     pkg.id,
           total,
           paymentMethod: 'chargily',
           paymentStatus: 'pending',
-          status: 'PENDING',
+          status:        'PENDING',
+          lockedPrice:   finalPrice,
+          priceLockedAt: priceLockedAt ? new Date(priceLockedAt) : new Date(),
         },
         select: { id: true },
       });
@@ -185,18 +186,18 @@ export async function POST(req: NextRequest) {
         const chargilyRes = await fetch('https://pay.chargily.net/api/v2/checkouts', {
           method: 'POST',
           headers: {
-            Authorization: `Bearer ${apiKeyRecord.value.trim()}`,
+            Authorization:  `Bearer ${apiKeyRecord.value.trim()}`,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            amount: total,
-            currency: currency.toLowerCase(),
+            amount:      total,
+            currency:    currency.toLowerCase(),
             success_url: `${baseUrl}/checkout/success?bookingId=${booking.id}`,
             failure_url: `${baseUrl}/checkout/failure?bookingId=${booking.id}`,
             metadata: {
-              booking_id: booking.id,
-              package_id: pkg.id,
-              user_id: userId ?? 'guest',
+              booking_id:    booking.id,
+              package_id:    pkg.id,
+              user_id:       userId ?? 'guest',
               package_title: pkg.title,
             },
           }),
@@ -207,7 +208,7 @@ export async function POST(req: NextRequest) {
           const errText = await chargilyRes.text();
           console.error('Chargily error:', errText);
           return NextResponse.json(
-            { error: '\u0641\u0634\u0644 \u0625\u0646\u0634\u0627\u0621 \u062c\u0644\u0633\u0629 \u0627\u0644\u062f\u0641\u0639. \u062d\u0627\u0648\u0644 \u0645\u062c\u062f\u062f\u0627.' },
+            { error: 'فشل إنشاء جلسة الدفع. حاول مجدداً.' },
             { status: 502 }
           );
         }
@@ -217,32 +218,34 @@ export async function POST(req: NextRequest) {
         await db.booking.delete({ where: { id: booking.id } });
         console.error('Chargily fetch error:', fetchError);
         return NextResponse.json(
-          { error: '\u062a\u0639\u0630\u0631 \u0627\u0644\u0627\u062a\u0635\u0627\u0644 \u0628\u062e\u062f\u0645\u0629 \u0627\u0644\u062f\u0641\u0639. \u062d\u0627\u0648\u0644 \u0645\u062c\u062f\u062f\u0627.' },
+          { error: 'تعذر الاتصال بخدمة الدفع. حاول مجدداً.' },
           { status: 502 }
         );
       }
 
       await db.booking.update({
         where: { id: booking.id },
-        data: { chargilyCheckoutId: chargilyData.id },
+        data:  { chargilyCheckoutId: chargilyData.id },
       });
 
       return NextResponse.json({
-        bookingId: booking.id,
+        bookingId:   booking.id,
         checkoutUrl: chargilyData.checkout_url,
       });
     }
 
     const booking = await db.booking.create({
       data: {
-        userId: userId,
-        guestName: userId ? null : (guestName ?? null),
-        guestPhone: userId ? null : (guestPhone ?? null),
-        packageId: pkg.id,
+        userId:        userId,
+        guestName:     userId ? null : (guestName ?? null),
+        guestPhone:    userId ? null : (guestPhone ?? null),
+        packageId:     pkg.id,
         total,
         paymentMethod,
         paymentStatus: 'pending_offline',
-        status: 'PENDING',
+        status:        'PENDING',
+        lockedPrice:   finalPrice,
+        priceLockedAt: priceLockedAt ? new Date(priceLockedAt) : new Date(),
       },
       select: { id: true },
     });

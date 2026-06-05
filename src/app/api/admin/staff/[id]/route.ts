@@ -35,7 +35,7 @@ export async function PUT(
     if (Array.isArray(permissions)) data.permissions = permissions;
     if (typeof active === 'boolean') data.active = active;
     if (typeof password === 'string' && password.length >= 6) {
-      data.password = await bcrypt.hash(password, 10);
+      data.password = await bcrypt.hash(password, 12);
     }
 
     if (Object.keys(data).length === 0) {

@@ -1,45 +1,60 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
+import { verifyAdmin } from '@/lib/auth';
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = verifyAdmin(req);
+  if (auth instanceof NextResponse) return auth;
+
   try {
     const s = await db.siteSettings.upsert({
       where: { id: 'main' },
       update: {},
       create: {
-        id: 'main',
-        logoUrl: '',
-        agencyName: '',
+        id:                'main',
+        logoUrl:           '',
+        agencyName:        '',
         agencyDescription: '',
-        phonePrimary: '',
-        phoneWhatsapp: '',
-        email: '',
-        address: '',
-        mapsUrl: '',
-        workingHours: '',
-        phones: [],
-        emails: [],
-        whatsapp: [],
-        facebook: [],
-        instagram: [],
-        tiktok: [],
-        youtube: [],
+        phonePrimary:      '',
+        phoneWhatsapp:     '',
+        email:             '',
+        address:           '',
+        mapsUrl:           '',
+        workingHours:      '',
+        phones:            [],
+        emails:            [],
+        whatsapp:          [],
+        facebook:          [],
+        instagram:         [],
+        tiktok:            [],
+        youtube:           [],
         consultationPrice: '2500',
-        currency: 'DZD',
+        currency:          'DZD',
       },
     });
     return NextResponse.json(s);
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error('[GET /api/admin/settings]', error);
     return NextResponse.json({ error: 'DB error' }, { status: 500 });
   }
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  const auth = verifyAdmin(req);
+  if (auth instanceof NextResponse) return auth;
+
   try {
-    const b = await req.json();
-    const clean = (arr: unknown) =>
-      Array.isArray(arr) ? arr.map(String).map((s) => s.trim()).filter(Boolean) : [];
+    const body: unknown = await req.json();
+    if (typeof body !== 'object' || body === null) {
+      return NextResponse.json({ error: 'بيانات غير صالحة' }, { status: 400 });
+    }
+
+    const b = body as Record<string, unknown>;
+
+    const clean = (arr: unknown): string[] =>
+      Array.isArray(arr)
+        ? arr.map(String).map(s => s.trim()).filter(Boolean)
+        : [];
 
     const updateData: Record<string, unknown> = {};
 
@@ -66,16 +81,16 @@ export async function POST(req: Request) {
       where: { id: 'main' },
       update: updateData,
       create: {
-        id: 'main',
-        logoUrl:           b.logoUrl           ?? '',
-        agencyName:        b.agencyName        ?? '',
-        agencyDescription: b.agencyDescription ?? '',
-        phonePrimary:      b.phonePrimary      ?? '',
-        phoneWhatsapp:     b.phoneWhatsapp     ?? '',
-        email:             b.email             ?? '',
-        address:           b.address           ?? '',
-        mapsUrl:           b.mapsUrl           ?? '',
-        workingHours:      b.workingHours      ?? '',
+        id:                'main',
+        logoUrl:           typeof b.logoUrl           === 'string' ? b.logoUrl           : '',
+        agencyName:        typeof b.agencyName        === 'string' ? b.agencyName        : '',
+        agencyDescription: typeof b.agencyDescription === 'string' ? b.agencyDescription : '',
+        phonePrimary:      typeof b.phonePrimary      === 'string' ? b.phonePrimary      : '',
+        phoneWhatsapp:     typeof b.phoneWhatsapp     === 'string' ? b.phoneWhatsapp     : '',
+        email:             typeof b.email             === 'string' ? b.email             : '',
+        address:           typeof b.address           === 'string' ? b.address           : '',
+        mapsUrl:           typeof b.mapsUrl           === 'string' ? b.mapsUrl           : '',
+        workingHours:      typeof b.workingHours      === 'string' ? b.workingHours      : '',
         phones:            clean(b.phones),
         emails:            clean(b.emails),
         whatsapp:          clean(b.whatsapp),
@@ -83,13 +98,14 @@ export async function POST(req: Request) {
         instagram:         clean(b.instagram),
         tiktok:            clean(b.tiktok),
         youtube:           clean(b.youtube),
-        consultationPrice: b.consultationPrice ?? '2500',
-        currency:          b.currency          ?? 'DZD',
+        consultationPrice: typeof b.consultationPrice === 'string' ? b.consultationPrice : '2500',
+        currency:          typeof b.currency          === 'string' ? b.currency          : 'DZD',
       },
     });
+
     return NextResponse.json(updated);
-  } catch (e) {
-    console.error(e);
+  } catch (error) {
+    console.error('[POST /api/admin/settings]', error);
     return NextResponse.json({ error: 'DB error' }, { status: 500 });
   }
 }

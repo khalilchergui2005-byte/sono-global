@@ -6,9 +6,16 @@ const DEFAULTS: Record<string, string> = {
   amadeus_client_id:       '',
   amadeus_client_secret:   '',
   amadeus_markup_percent:  '10',
+  eur_to_dzd_rate:         '260',
   chargily_api_key:        '',
   chargily_webhook_secret: '',
   payment_methods:         'cash,cib,bank_transfer,ccp',
+  smtp_host:               'smtp.gmail.com',
+  smtp_port:               '587',
+  smtp_user:               '',
+  smtp_pass:               '',
+  smtp_from_name:          'Sono Global Travel',
+  admin_email:             '',
 };
 
 const ALLOWED_KEYS = new Set(Object.keys(DEFAULTS));
@@ -30,7 +37,10 @@ async function isOnboardingComplete(): Promise<boolean> {
   }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  const auth = verifyAdmin(req);
+  if (auth instanceof NextResponse) return auth;
+
   try {
     const rows = await db.siteConfig.findMany();
     const result: Record<string, string> = { ...DEFAULTS };
@@ -40,7 +50,8 @@ export async function GET() {
       }
     }
     return NextResponse.json(result);
-  } catch {
+  } catch (error) {
+    console.error('[GET /api/siteconfig]', error);
     return NextResponse.json({ error: 'DB error' }, { status: 500 });
   }
 }
@@ -55,10 +66,7 @@ export async function POST(req: NextRequest) {
   try {
     const body: unknown = await req.json();
     if (!body || typeof body !== 'object' || Array.isArray(body)) {
-      return NextResponse.json(
-        { error: 'بيانات غير صالحة' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'بيانات غير صالحة' }, { status: 400 });
     }
 
     const entries = Object.entries(body as Record<string, unknown>).filter(
@@ -66,10 +74,7 @@ export async function POST(req: NextRequest) {
     );
 
     if (entries.length === 0) {
-      return NextResponse.json(
-        { error: 'لا توجد keys صالحة' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'لا توجد keys صالحة' }, { status: 400 });
     }
 
     const updates = await Promise.all(
@@ -83,8 +88,8 @@ export async function POST(req: NextRequest) {
     );
 
     return NextResponse.json({ saved: updates.length });
-  } catch (e) {
-    console.error('siteconfig POST error:', e);
+  } catch (error) {
+    console.error('[POST /api/siteconfig]', error);
     return NextResponse.json({ error: 'DB error' }, { status: 500 });
   }
 }
