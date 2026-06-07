@@ -59,6 +59,7 @@ const heroKeyframes = `
     border-color: rgba(201,168,76,0.5) !important;
   }
   .slide-dot:hover { transform: scaleX(1.4) !important; }
+  @media(max-width:640px){.hero-country-badge{display:none !important;}.hero-stat-card{padding:0.75rem 1.25rem !important;}.hero-content{padding:0 1rem !important;}}
 `;
 
 export default function Hero() {
@@ -121,7 +122,7 @@ export default function Hero() {
       <div style={{ position: 'absolute', top: '15%', left: '5%', zIndex: 3, width: '300px', height: '300px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(10,126,181,0.08) 0%, transparent 70%)', pointerEvents: 'none' }} />
       <div style={{ position: 'absolute', bottom: '20%', right: '3%', zIndex: 3, width: '200px', height: '200px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%)', pointerEvents: 'none' }} />
 
-      <div style={{ position: 'relative', zIndex: 4, textAlign: 'center', padding: '0 1.5rem', maxWidth: '900px', width: '100%', opacity: loaded ? 1 : 0, transition: 'opacity 0.4s ease', direction: 'rtl' }}>
+      <div className='hero-content' style={{ position: 'relative', zIndex: 4, textAlign: 'center', padding: '0 1.5rem', maxWidth: '900px', width: '100%', opacity: loaded ? 1 : 0, transition: 'opacity 0.4s ease', direction: 'rtl' }}>
 
         <div style={{ animation: 'heroBadge 0.6s ease forwards', marginBottom: '1.5rem', display: 'flex', justifyContent: 'center' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', background: 'rgba(10,126,181,0.15)', border: '1px solid rgba(10,126,181,0.4)', color: '#7dd3fc', padding: '7px 22px', borderRadius: '50px', fontSize: '12.5px', fontWeight: 700, letterSpacing: '0.5px', WebkitBackdropFilter: 'blur(10px)' }}>
@@ -175,7 +176,7 @@ export default function Hero() {
         ))}
       </div>
 
-      <div style={{ position: 'absolute', bottom: '2rem', right: '2rem', zIndex: 5, animation: 'slideCountry 0.5s ease forwards' }} key={current}>
+      <div className='hero-country-badge' style={{ position: 'absolute', bottom: '2rem', right: '2rem', zIndex: 5, animation: 'slideCountry 0.5s ease forwards' }} key={current}>
         <div style={{ background: 'rgba(0,0,0,0.45)', WebkitBackdropFilter: 'blur(12px)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '12px', padding: '8px 16px', display: 'flex', alignItems: 'center', gap: '10px' }}>
           <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#C9A84C', boxShadow: '0 0 8px rgba(201,168,76,0.8)' }} />
           <div>

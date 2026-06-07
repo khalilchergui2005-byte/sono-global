@@ -96,6 +96,7 @@ const keyframesStyle = `
   .logout-btn:hover { background: rgba(239,68,68,0.18) !important; color: #fca5a5 !important; }
   .home-btn:hover { background: rgba(255,255,255,0.08) !important; color: rgba(255,255,255,0.85) !important; }
   .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 50px rgba(0,0,0,0.4) !important; }
+  @media(max-width:640px){.account-stats-grid{grid-template-columns:1fr 1fr !important;gap:0.75rem !important;}.account-req-card{flex-direction:column !important;align-items:flex-start !important;}}
 `;
 
 function ChatPanel({ requestType, requestId, userId, userName, onClose }: {
@@ -380,7 +381,7 @@ export default function AccountPage() {
             </div>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
+        <div className='account-stats-grid' style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '1rem', marginBottom: '2rem' }}>
           {statCards.map((s, i) => (
             <div key={i} className="stat-card" style={{ background: 'linear-gradient(145deg, rgba(255,255,255,0.04) 0%, rgba(255,255,255,0.02) 100%)', border: '1px solid rgba(255,255,255,0.07)', borderTop: '2px solid ' + s.color, borderRadius: '16px', padding: '1.25rem', cursor: 'default', transition: 'all 0.3s ease', animation: 'slideUp 0.5s ease ' + (i * 0.1) + 's both', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>

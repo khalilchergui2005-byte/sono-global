@@ -13,6 +13,7 @@ type Settings = {
   amadeus_markup_percent: string;
   chargily_api_key: string; chargily_webhook_secret: string;
   payment_methods: string;
+  eur_to_dzd_rate: string;
   logoUrl: string;
 };
 
@@ -26,6 +27,7 @@ const EMPTY: Settings = {
   amadeus_client_id: '', amadeus_client_secret: '', amadeus_markup_percent: '10',
   chargily_api_key: '', chargily_webhook_secret: '',
   payment_methods: 'cash,cib,bank_transfer,ccp',
+  eur_to_dzd_rate: '260',
   logoUrl: '',
 };
 
@@ -132,6 +134,7 @@ export default function SettingsPage() {
         chargily_api_key:        c.chargily_api_key        || '',
         chargily_webhook_secret: c.chargily_webhook_secret || '',
         payment_methods:         c.payment_methods         || 'cash,cib,bank_transfer,ccp',
+        eur_to_dzd_rate:         c.eur_to_dzd_rate         || '260',
         logoUrl:                 logoVal,
       });
       if (logoVal) setLogoPreview(logoVal);
@@ -218,6 +221,7 @@ export default function SettingsPage() {
           chargily_api_key:        form.chargily_api_key,
           chargily_webhook_secret: form.chargily_webhook_secret,
           payment_methods:         form.payment_methods,
+          eur_to_dzd_rate:         form.eur_to_dzd_rate,
         }),
       }),
     ]);
@@ -235,7 +239,7 @@ export default function SettingsPage() {
   const activePay = form.payment_methods.split(',').filter(Boolean);
 
   return (
-    <div style={{ padding: '2rem', fontFamily: 'Cairo,sans-serif', direction: 'rtl', maxWidth: '860px' }}>
+    <div style={{ padding: '2rem', fontFamily: 'Cairo,sans-serif', direction: 'rtl', maxWidth: '860px' }}><style>{'@media(max-width:640px){.adm-set-grid{grid-template-columns:1fr !important;}}'}</style>
 
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
@@ -325,7 +329,7 @@ export default function SettingsPage() {
           <Field label="وصف الوكالة">
             <input value={form.agencyDescription} onChange={e => set('agencyDescription', e.target.value)} placeholder="وكالة سفر وسياحة..." style={inp} />
           </Field>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+          <div className='adm-set-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
             <Field label="سعر الاستشارة (دج)">
               <input type="number" value={form.consultationPrice} onChange={e => set('consultationPrice', e.target.value)} placeholder="2500" style={inp} />
             </Field>
@@ -375,7 +379,7 @@ export default function SettingsPage() {
           <Card>
             <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: '12px', fontWeight: 700, letterSpacing: '1px', marginBottom: '1rem' }}>Amadeus — الطيران والفنادق</div>
             <div style={{ background: 'rgba(99,102,241,0.08)', border: '1px solid rgba(99,102,241,0.2)', borderRadius: '10px', padding: '12px 16px', marginBottom: '1rem', fontSize: '12px', color: 'rgba(255,255,255,0.5)', lineHeight: 1.7 }}>
-              سجّل مجاناً على <span style={{ color: '#a5b4fc' }}>developers.amadeus.com</span> واحصل على Client ID و Secret من ال sandbox
+              أدخل Client ID و Client Secret الخاص بحساب Amadeus Enterprise الخاص بوكالتك
             </div>
             <Field label="Client ID">
               <input value={form.amadeus_client_id} onChange={e => set('amadeus_client_id', e.target.value)} placeholder="أدخل Amadeus Client ID" style={inp} />
@@ -414,6 +418,12 @@ export default function SettingsPage() {
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <input type="number" min="0" max="100" step="0.5" value={form.amadeus_markup_percent} onChange={e => set('amadeus_markup_percent', e.target.value)} style={{ ...inp, maxWidth: '160px' }} />
                 <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '12px' }}>مثال: 10 = السعر x 1.10</span>
+              </div>
+            </Field>
+            <Field label="سعر صرف اليورو (EUR → DZD)">
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <input type="number" min="1" step="1" value={form.eur_to_dzd_rate} onChange={e => set('eur_to_dzd_rate', e.target.value)} style={{ ...inp, maxWidth: '160px' }} />
+                <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '12px' }}>مثال: 260 = 1 EUR = 260 دج</span>
               </div>
             </Field>
           </Card>

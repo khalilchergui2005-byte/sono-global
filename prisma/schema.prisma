@@ -43,6 +43,7 @@ model Booking {
   userId              String?
   guestName           String?
   guestPhone          String?
+  guestEmail          String?
   packageId           String
   status              BookingStatus @default(PENDING)
   total               Float
@@ -290,3 +291,4 @@ enum BookingStatus {
   CONFIRMED
   CANCELLED
 }
+

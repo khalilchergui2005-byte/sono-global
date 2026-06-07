@@ -9,7 +9,6 @@ interface ChargilyCheckoutPaidEvent {
   data: {
     object: {
       id: string;
-      payment_link_id?: string;
       metadata?: {
         booking_id?: string;
       };
@@ -26,7 +25,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Failed to read body' }, { status: 400 });
   }
 
-  // 1. قراءة webhook secret من SiteConfig
   let webhookSecret: string;
 
   try {
@@ -46,7 +44,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true }, { status: 200 });
   }
 
-  // 2. التحقق من HMAC-SHA256 signature
   const signatureHeader = req.headers.get('signature');
 
   if (!signatureHeader) {
@@ -74,7 +71,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Signature verification failed' }, { status: 401 });
   }
 
-  // 3. Parse event
   let event: ChargilyCheckoutPaidEvent;
 
   try {
@@ -84,9 +80,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ received: true }, { status: 200 });
   }
 
-  // 4. معالجة checkout.paid فقط
   if (event.type === 'checkout.paid') {
-    const bookingId        = event.data?.object?.metadata?.booking_id;
+    const bookingId         = event.data?.object?.metadata?.booking_id;
     const chargilyPaymentId = event.data?.object?.id;
 
     if (!bookingId || !chargilyPaymentId) {
@@ -95,31 +90,13 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const booking = await db.booking.findUnique({
-        where:  { id: bookingId },
-        select: {
-          id:            true,
-          paymentStatus: true,
-          guestName:     true,
-          guestPhone:    true,
-          total:         true,
-          user:          { select: { name: true, email: true } },
-          package:       { select: { title: true } },
+      // Atomic update — يمنع Race Condition
+      // updateMany مع where paymentStatus != paid يضمن التنفيذ مرة واحدة فقط
+      const result = await db.booking.updateMany({
+        where: {
+          id:            bookingId,
+          paymentStatus: { not: 'paid' },
         },
-      });
-
-      if (!booking) {
-        console.error(`Booking not found: ${bookingId}`);
-        return NextResponse.json({ received: true }, { status: 200 });
-      }
-
-      // تجنب التحديث المكرر
-      if (booking.paymentStatus === 'paid') {
-        return NextResponse.json({ received: true }, { status: 200 });
-      }
-
-      await db.booking.update({
-        where: { id: bookingId },
         data: {
           paymentStatus:    'paid',
           chargilyPaymentId,
@@ -127,11 +104,32 @@ export async function POST(req: NextRequest) {
         },
       });
 
+      // count === 0 يعني سبق تحديثه — نتجاهل بصمت
+      if (result.count === 0) {
+        return NextResponse.json({ received: true }, { status: 200 });
+      }
+
       console.log(`Booking ${bookingId} confirmed via Chargily payment ${chargilyPaymentId}`);
 
-      // إرسال إيميل تأكيد الدفع — silent fail
+      // جلب بيانات الحجز لإرسال الإيميل
+      const booking = await db.booking.findUnique({
+        where:  { id: bookingId },
+        select: {
+          id:         true,
+          total:      true,
+          guestName:  true,
+          guestEmail: true,
+          user:       { select: { name: true, email: true } },
+          package:    { select: { title: true } },
+        },
+      });
+
+      if (!booking) {
+        return NextResponse.json({ received: true }, { status: 200 });
+      }
+
       const customerName  = booking.user?.name  ?? booking.guestName  ?? 'عميل';
-      const customerEmail = booking.user?.email ?? '';
+      const customerEmail = booking.user?.email ?? booking.guestEmail ?? '';
       const packageTitle  = booking.package?.title ?? 'باقة سياحية';
 
       void sendPaymentConfirmation({

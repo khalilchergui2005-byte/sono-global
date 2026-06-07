@@ -65,7 +65,7 @@ export default async function AdminDashboard() {
   ];
 
   return (
-    <div style={{ minHeight: '100vh', background: '#0a0f1e', fontFamily: 'Cairo, sans-serif', padding: '2rem', direction: 'rtl' }}>
+    <div style={{ minHeight: '100vh', background: '#0a0f1e', fontFamily: 'Cairo, sans-serif', padding: '2rem', direction: 'rtl' }}><style>{'@media(max-width:640px){.adm-dash-grid{grid-template-columns:1fr !important;}}'}</style>
 
       <div style={{ marginBottom: '2rem' }}>
         <h1 style={{ color: 'white', fontSize: '22px', fontWeight: 900, margin: '0 0 4px' }}>
@@ -92,7 +92,7 @@ export default async function AdminDashboard() {
         ))}
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+      <div className='adm-dash-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
 
         <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)', borderRadius: '16px', padding: '1.5rem' }}>
           <h2 style={{ color: 'white', fontSize: '15px', fontWeight: 700, margin: '0 0 1.25rem', display: 'flex', alignItems: 'center', gap: '8px' }}>

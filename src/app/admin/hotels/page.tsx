@@ -35,13 +35,13 @@ export default function AdminHotelsPage() {
   const displayed = hotels.filter(h => filter==='all' || h.status===filter);
 
   return (
-    <div style={{ fontFamily:'Cairo,sans-serif', direction:'rtl' }}>
+    <div style={{ fontFamily:'Cairo,sans-serif', direction:'rtl' }}><style>{'@media(max-width:640px){.adm-ht-filters{grid-template-columns:1fr 1fr !important;}}'}</style>
       <div style={{ marginBottom:'2rem', display:'flex', alignItems:'center', justifyContent:'space-between', flexWrap:'wrap', gap:'1rem' }}>
         <div>
           <h1 style={{ color:'white', fontSize:'22px', fontWeight:900, margin:0 }}>حجوزات الفنادق</h1>
           <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'13px', margin:'4px 0 0' }}>{hotels.length} طلب إجمالي</p>
         </div>
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'10px' }}>
+        <div className='adm-ht-filters' style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'10px' }}>
           {['all','pending','in_progress','done'].map(s=>(
             <button key={s} onClick={()=>setFilter(s)} style={{ background: filter===s?(s==='all'?'#ec4899':STATUS_COLOR[s]||'#ec4899'):'rgba(255,255,255,0.04)', color: filter===s?'white':'rgba(255,255,255,0.5)', border:`1px solid ${filter===s?(s==='all'?'#ec4899':STATUS_COLOR[s]||'#ec4899'):'rgba(255,255,255,0.08)'}`, padding:'8px 16px', borderRadius:'8px', fontSize:'12px', fontWeight:600, cursor:'pointer', fontFamily:'Cairo,sans-serif', whiteSpace:'nowrap' }}>
               {s==='all'?'الكل':STATUS_LABEL[s]}

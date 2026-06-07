@@ -194,7 +194,7 @@ export default function HotelsPage() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
+            <div className='hotels-dates-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '12px' }}>
               <div>
                 <label style={{ display: 'block', color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 700, marginBottom: '8px', letterSpacing: '1px' }}>{'\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u062f\u062e\u0648\u0644'}</label>
                 <input type='date' value={checkIn} onChange={e => setCheckIn(e.target.value)} style={{ ...INPUT, colorScheme: 'dark' }} />
@@ -205,7 +205,7 @@ export default function HotelsPage() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '1.5rem' }}>
+            <div className='hotels-pax-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 700, marginBottom: '8px', letterSpacing: '1px' }}>{'\u0639\u062f\u062f \u0627\u0644\u0628\u0627\u0644\u063a\u064a\u0646'}</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '14px', padding: '8px 14px', height: '52px' }}>
@@ -383,7 +383,7 @@ export default function HotelsPage() {
                       </div>
                     )}
 
-                    <div style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '14px', padding: '1rem', marginBottom: '1.25rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                    <div className='hotels-summary-grid' style={{ background: 'rgba(201,168,76,0.06)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '14px', padding: '1rem', marginBottom: '1.25rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
                       {[
                         { label: '\u0627\u0644\u062f\u062e\u0648\u0644', value: checkIn || '\u2014' },
                         { label: '\u0627\u0644\u062e\u0631\u0648\u062c', value: checkOut || '\u2014' },
@@ -402,7 +402,7 @@ export default function HotelsPage() {
                     <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', paddingTop: '1.25rem' }}>
                       <div style={{ color: 'rgba(255,255,255,0.3)', fontSize: '10px', fontWeight: 700, letterSpacing: '1.5px', marginBottom: '1rem' }}>{'\u0628\u064a\u0627\u0646\u0627\u062a \u0627\u0644\u062d\u062c\u0632'}</div>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+                        <div className='hotels-book-names' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                           <div>
                             <label style={{ display: 'block', color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 600, marginBottom: '6px' }}>{'\u0627\u0644\u0627\u0633\u0645 \u0627\u0644\u0643\u0627\u0645\u0644 *'}</label>
                             <input style={DARK_INP} value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder={'\u0627\u0633\u0645\u0643 \u0627\u0644\u0643\u0627\u0645\u0644'} />
@@ -453,7 +453,7 @@ export default function HotelsPage() {
           </div>
         )}
 
-        <style>{'@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.06)}}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'}</style>
+        <style>{'@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.06)}}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@media(max-width:640px){.hotels-dates-grid{grid-template-columns:1fr !important;}.hotels-pax-grid{grid-template-columns:1fr !important;}.hotels-book-names{grid-template-columns:1fr !important;}.hotels-summary-grid{grid-template-columns:1fr !important;}}'}</style>
       </main>
       <Footer />
     </>

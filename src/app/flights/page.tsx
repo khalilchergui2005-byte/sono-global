@@ -224,7 +224,6 @@ export default function FlightsPage() {
       <Header />
       <main style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#060d24 0%,#0a1628 50%,#060d24 100%)', fontFamily: 'Cairo,sans-serif', direction: 'rtl', paddingTop: '101px' }}>
 
-        {/* ===== CINEMATIC HERO ===== */}
         <div ref={heroRef} style={{ position: 'relative', minHeight: '520px', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', padding: '4rem 2rem' }}>
 
           <div style={{ position: 'absolute', inset: 0 }}>
@@ -264,7 +263,6 @@ export default function FlightsPage() {
           </div>
         </div>
 
-        {/* ===== SEARCH SECTION ===== */}
         <div style={{ maxWidth: '960px', margin: '0 auto', padding: '0 1.5rem 4rem' }}>
 
           <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '24px', padding: '2rem', marginBottom: '2rem', boxShadow: '0 20px 60px rgba(0,0,0,0.3)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)' }}>
@@ -278,7 +276,7 @@ export default function FlightsPage() {
               ))}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '12px', marginBottom: '12px', alignItems: 'end' }}>
+            <div className='fl-airports' style={{ display: 'grid', gridTemplateColumns: '1fr auto 1fr', gap: '12px', marginBottom: '12px', alignItems: 'end' }}>
               <div>
                 <label style={{ display: 'block', color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 700, marginBottom: '8px', letterSpacing: '1px' }}>{'\u0645\u0637\u0627\u0631 \u0627\u0644\u0645\u063a\u0627\u062f\u0631\u0629'}</label>
                 <div style={{ position: 'relative' }}>
@@ -287,7 +285,7 @@ export default function FlightsPage() {
                   <div style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.2)', fontSize: '11px' }}>IATA</div>
                 </div>
               </div>
-              <div style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2px' }}>
+              <div className='fl-swap' style={{ display: 'flex', alignItems: 'flex-end', paddingBottom: '2px' }}>
                 <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: 'rgba(10,126,181,0.15)', border: '1px solid rgba(10,126,181,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
                   onClick={() => { const tmp = from; setFrom(to); setTo(tmp); }}>
                   <svg width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='#0A7EB5' strokeWidth='2'><path d='M7 16V4m0 0L3 8m4-4l4 4'/><path d='M17 8v12m0 0l4-4m-4 4l-4-4'/></svg>
@@ -303,7 +301,7 @@ export default function FlightsPage() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: tripType==='round' ? '1fr 1fr' : '1fr', gap: '12px', marginBottom: '12px' }}>
+            <div className='fl-dates' style={{ display: 'grid', gridTemplateColumns: tripType==='round' ? '1fr 1fr' : '1fr', gap: '12px', marginBottom: '12px' }}>
               <div>
                 <label style={{ display: 'block', color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 700, marginBottom: '8px', letterSpacing: '1px' }}>{'\u062a\u0627\u0631\u064a\u062e \u0627\u0644\u0630\u0647\u0627\u0628'}</label>
                 <input type='date' value={depart} onChange={e => setDepart(e.target.value)} style={{ ...INPUT, colorScheme: 'dark' }} />
@@ -316,7 +314,7 @@ export default function FlightsPage() {
               )}
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px', marginBottom: '1.5rem' }}>
+            <div className='fl-pax' style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '12px', marginBottom: '1.5rem' }}>
               <div>
                 <label style={{ display: 'block', color: 'rgba(255,255,255,0.4)', fontSize: '11px', fontWeight: 700, marginBottom: '8px', letterSpacing: '1px' }}>{'\u0639\u062f\u062f \u0627\u0644\u0631\u0643\u0627\u0628'}</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)', borderRadius: '14px', padding: '8px 14px', height: '52px' }}>
@@ -438,7 +436,7 @@ export default function FlightsPage() {
                 <div style={{ color: '#C9A84C', fontSize: '28px', fontWeight: 900 }}>{selected.price.toLocaleString()} {selected.currency}</div>
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div className='fl-book-names' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                   <input value={name} onChange={e => setName(e.target.value)} placeholder={'\u0627\u0644\u0627\u0633\u0645 \u0627\u0644\u0643\u0627\u0645\u0644 *'} style={INPUT} />
                   <input value={phone} onChange={e => setPhone(e.target.value)} placeholder={'\u0631\u0642\u0645 \u0627\u0644\u0647\u0627\u062a\u0641 *'} style={{ ...INPUT, direction: 'ltr' }} />
                 </div>
@@ -469,7 +467,7 @@ export default function FlightsPage() {
           )}
         </div>
 
-        <style>{'@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}'}</style>
+        <style>{'@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.05)}}@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}@media(max-width:640px){.fl-airports{grid-template-columns:1fr !important;}.fl-swap{align-items:center !important;justify-content:center;padding-bottom:0 !important;}.fl-dates{grid-template-columns:1fr !important;}.fl-pax{grid-template-columns:1fr !important;}.fl-book-names{grid-template-columns:1fr !important;}}'}</style>
       </main>
       <Footer />
     </>

@@ -67,7 +67,7 @@ function ChatPanel({
 
   return (
     <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
-      <div style={{ background: '#0d1530', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '18px', width: '100%', maxWidth: '520px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', fontFamily: 'Cairo,sans-serif', direction: 'rtl' }}>
+      <div style={{ background: '#0d1530', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '18px', width: '100%', maxWidth: '520px', maxHeight: '80vh', display: 'flex', flexDirection: 'column', fontFamily: 'Cairo,sans-serif', direction: 'rtl' }}><style>{'@media(max-width:640px){.staff-stats-grid{grid-template-columns:1fr !important;}}'}</style>
         <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid rgba(255,255,255,0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
             <div style={{ color: 'white', fontWeight: 700, fontSize: '15px' }}>محادثة — {clientName}</div>
@@ -324,7 +324,7 @@ export default function StaffDashboard() {
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
+        <div className='staff-stats-grid' style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '1rem', marginBottom: '1.75rem' }}>
           {[
             { label: 'إجمالي', value: items.length, color: activeColor },
             { label: 'معلقة', value: items.filter(c => c.status === 'pending').length, color: '#f5a623' },

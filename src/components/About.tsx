@@ -32,6 +32,7 @@ const aboutKeyframes = `
   .about-btn-primary:hover { transform: translateY(-3px) !important; box-shadow: 0 12px 36px rgba(10,126,181,0.45) !important; }
   .about-btn-outline:hover { background: rgba(10,126,181,0.08) !important; transform: translateY(-3px) !important; }
   .srv-mini-card:hover { transform: translateY(-4px) !important; border-color: #0A7EB5 !important; background: rgba(10,126,181,0.04) !important; }
+  @media(max-width:768px){.about-main-grid{grid-template-columns:1fr !important;gap:2rem !important;}}
 `;
 
 export default function About() {
@@ -67,7 +68,7 @@ export default function About() {
 
       <div style={{ background: 'linear-gradient(135deg, #f0f6ff 0%, #f8fafc 50%, #eef4fb 100%)', padding: '6rem 2rem', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: '-80px', left: '-80px', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(10,126,181,0.06) 0%, transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ maxWidth: '1150px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
+        <div className='about-main-grid' style={{ maxWidth: '1150px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '5rem', alignItems: 'center' }}>
 
           <div style={{ position: 'relative' }}>
             <div style={{ position: 'absolute', top: '-20px', right: '-20px', width: '100%', height: '100%', border: '2px solid rgba(10,126,181,0.12)', borderRadius: '24px', zIndex: 0 }} />

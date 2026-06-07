@@ -3,12 +3,13 @@ import { db } from '@/lib/db';
 import { verifyToken, getTokenFromHeader } from '@/lib/auth';
 
 interface CreatePaymentBody {
-  packageId:     string;
-  paymentMethod: string;
-  passengers?:   number;
-  guestName?:    string;
-  guestPhone?:   string;
-  lockedPrice?:  number;
+  packageId:      string;
+  paymentMethod:  string;
+  passengers?:    number;
+  guestName?:     string;
+  guestPhone?:    string;
+  guestEmail?:    string;
+  lockedPrice?:   number;
   priceLockedAt?: string;
 }
 
@@ -18,6 +19,7 @@ interface ChargilyCheckoutResponse {
 }
 
 const LOCK_DURATION_MS = 10 * 60 * 1000;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
 export async function POST(req: NextRequest) {
   try {
@@ -49,6 +51,7 @@ export async function POST(req: NextRequest) {
       passengers,
       guestName,
       guestPhone,
+      guestEmail,
       lockedPrice,
       priceLockedAt,
     } = body as CreatePaymentBody;
@@ -62,6 +65,12 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    if (guestEmail !== undefined && guestEmail !== null && guestEmail !== '') {
+      if (typeof guestEmail !== 'string' || !EMAIL_RE.test(guestEmail.trim())) {
+        return NextResponse.json({ error: 'البريد الإلكتروني غير صالح' }, { status: 400 });
+      }
+    }
+
     if (!packageId || typeof packageId !== 'string' || packageId.trim().length === 0) {
       return NextResponse.json({ error: 'packageId مطلوب' }, { status: 400 });
     }
@@ -72,15 +81,11 @@ export async function POST(req: NextRequest) {
     });
 
     let allowedMethods: string[] = ['cash'];
-    if (paymentConfig?.value) {
-      try {
-        const parsed: unknown = JSON.parse(paymentConfig.value);
-        if (Array.isArray(parsed) && parsed.every(x => typeof x === 'string')) {
-          allowedMethods = parsed as string[];
-        }
-      } catch {
-        allowedMethods = ['cash'];
-      }
+    if (paymentConfig?.value && paymentConfig.value.trim().length > 0) {
+      allowedMethods = paymentConfig.value
+        .split(',')
+        .map((m: string) => m.trim())
+        .filter(Boolean);
     }
 
     if (!paymentMethod || !allowedMethods.includes(paymentMethod)) {
@@ -114,7 +119,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'الباقة غير متاحة حالياً' }, { status: 400 });
     }
 
-    // فحص Price Lock
     let finalPrice = pkg.price;
 
     if (lockedPrice !== undefined && priceLockedAt !== undefined) {
@@ -152,6 +156,15 @@ export async function POST(req: NextRequest) {
 
     const currency = siteSettings?.currency ?? 'DZD';
 
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
+    if (!baseUrl || baseUrl.trim().length === 0) {
+      console.error('NEXT_PUBLIC_BASE_URL is not set');
+      return NextResponse.json(
+        { error: 'خدمة الدفع غير مهيأة — تواصل مع الدعم' },
+        { status: 503 }
+      );
+    }
+
     if (paymentMethod === 'chargily') {
       const apiKeyRecord = await db.siteConfig.findUnique({
         where: { key: 'chargily_api_key' },
@@ -162,13 +175,12 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: 'خدمة الدفع غير مفعلة حالياً' }, { status: 503 });
       }
 
-      const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? 'http://localhost:3000';
-
       const booking = await db.booking.create({
         data: {
           userId:        userId,
           guestName:     userId ? null : (guestName ?? null),
           guestPhone:    userId ? null : (guestPhone ?? null),
+          guestEmail:    userId ? null : (guestEmail?.trim() || null),
           packageId:     pkg.id,
           total,
           paymentMethod: 'chargily',
@@ -192,8 +204,8 @@ export async function POST(req: NextRequest) {
           body: JSON.stringify({
             amount:      total,
             currency:    currency.toLowerCase(),
-            success_url: `${baseUrl}/checkout/success?bookingId=${booking.id}`,
-            failure_url: `${baseUrl}/checkout/failure?bookingId=${booking.id}`,
+            success_url: `${baseUrl.trim()}/checkout/success?bookingId=${booking.id}`,
+            failure_url: `${baseUrl.trim()}/checkout/failure?bookingId=${booking.id}`,
             metadata: {
               booking_id:    booking.id,
               package_id:    pkg.id,
@@ -239,6 +251,7 @@ export async function POST(req: NextRequest) {
         userId:        userId,
         guestName:     userId ? null : (guestName ?? null),
         guestPhone:    userId ? null : (guestPhone ?? null),
+        guestEmail:    userId ? null : (guestEmail?.trim() || null),
         packageId:     pkg.id,
         total,
         paymentMethod,

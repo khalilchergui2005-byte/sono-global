@@ -1,6 +1,6 @@
-﻿import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
-import { verifyAdmin } from '@/lib/auth';
+import { verifyStaffOrAdmin } from '@/lib/auth';
 import { sendConsultationNotification } from '@/lib/mailer';
 
 const attempts = new Map<string, { count: number; resetAt: number }>();
@@ -28,7 +28,7 @@ function checkRateLimit(ip: string): boolean {
 }
 
 export async function GET(req: NextRequest) {
-  const auth = verifyAdmin(req);
+  const auth = verifyStaffOrAdmin(req);
   if (auth instanceof NextResponse) return auth;
 
   try {

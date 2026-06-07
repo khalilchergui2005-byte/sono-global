@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { sendWelcomeEmail } from '@/lib/mailer';
 import { db } from '@/lib/db';
 import { hashPassword, signToken } from '@/lib/auth';
 
@@ -97,6 +98,7 @@ export async function POST(req: NextRequest) {
       name:   user.name ?? '',
     });
 
+    void sendWelcomeEmail({ customerName: user.name ?? '', customerEmail: user.email });
     return NextResponse.json({ token, user }, { status: 201 });
 
   } catch (error) {

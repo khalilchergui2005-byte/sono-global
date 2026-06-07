@@ -155,7 +155,8 @@ export default function Footer() {
         </div>
       </div>
 
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 2rem 3rem', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1.4fr', gap: '3rem' }}>
+      <style>{'@media(max-width:900px){.footer-grid{grid-template-columns:1fr 1fr !important;gap:2rem !important;}}@media(max-width:560px){.footer-grid{grid-template-columns:1fr !important;}}'}</style>
+      <div className='footer-grid' style={{ maxWidth: '1200px', margin: '0 auto', padding: '4rem 2rem 3rem', display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1.4fr', gap: '3rem' }}>
 
         <div style={{ opacity: visible ? 1 : 0, transform: visible ? 'translateY(0)' : 'translateY(30px)', transition: 'all 0.7s ease' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '1.5rem' }}>

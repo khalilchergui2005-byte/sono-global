@@ -28,6 +28,7 @@ const contactKeyframes = `
   .consult-submit:hover { transform: translateY(-2px) !important; box-shadow: 0 12px 36px rgba(10,126,181,0.5) !important; filter: brightness(1.05); }
   .consult-input:focus { border-color: rgba(10,126,181,0.6) !important; box-shadow: 0 0 0 3px rgba(10,126,181,0.12) !important; }
   .feature-chip:hover { background: rgba(10,126,181,0.12) !important; transform: translateY(-2px) !important; }
+  @media(max-width:640px){.contact-features-grid{grid-template-columns:1fr !important;}.contact-form-names{grid-template-columns:1fr !important;}}
 `;
 
 const SUCCESS_SVG = (
@@ -110,7 +111,7 @@ export default function Contact() {
 
           <div style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '28px', padding: '2.5rem', backdropFilter: 'blur(10px)' }}>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '2rem' }}>
+            <div className='contact-features-grid' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '2rem' }}>
               {consultFeatures.map((f, i) => (
                 <div key={i} className='feature-chip' style={{ background: 'rgba(10,126,181,0.07)', border: '1px solid rgba(10,126,181,0.15)', borderRadius: '12px', padding: '11px 14px', display: 'flex', alignItems: 'center', gap: '9px', transition: 'all 0.2s ease', cursor: 'default' }}>
                   <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'rgba(10,126,181,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
@@ -133,7 +134,7 @@ export default function Contact() {
               </div>
             ) : (
               <form onSubmit={handleSubmit}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
+                <div className='contact-form-names' style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem' }}>
                   <div>
                     <label style={labelStyle}>{'الاسم الكامل *'}</label>
                     <input required className='consult-input' value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder={'أدخل اسمك'} style={inputStyle} />

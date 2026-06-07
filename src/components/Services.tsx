@@ -41,6 +41,11 @@ const servicesKeyframes = `
   .srv-cta:hover { transform: translateY(-3px) !important; filter: brightness(1.1); box-shadow: inherit; }
   .srv-detail-item:hover { transform: translateX(-4px) !important; }
   .srv-dest-tag:hover { transform: scale(1.05) !important; }
+  @media (max-width: 640px) {
+    .srv-grid { grid-template-columns: 1fr !important; min-height: auto !important; }
+    .srv-img-col { min-height: 260px; }
+    .srv-text-col { padding: 1.75rem !important; border-right: none !important; border-top: 1px solid rgba(255,255,255,0.04) !important; }
+  }
 `;
 
 export default function Services() {
@@ -125,9 +130,9 @@ export default function Services() {
         ))}
       </div>
 
-      <div ref={contentRef} key={animKey} style={{ marginTop: '2.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '520px', animation: 'contentFade 0.4s ease forwards' }}>
+      <div ref={contentRef} key={animKey} className='srv-grid' style={{ marginTop: '2.5rem', display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '520px', animation: 'contentFade 0.4s ease forwards' }}>
 
-        <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <div className='srv-img-col' style={{ position: 'relative', overflow: 'hidden' }}>
           {s.image ? (
             <>
               <img src={s.image} alt={s.title} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', animation: 'imgZoom 0.6s ease forwards' }} />
@@ -146,7 +151,7 @@ export default function Services() {
           )}
         </div>
 
-        <div style={{ background: 'linear-gradient(145deg, #0a1428, #080e20)', padding: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', borderRight: '1px solid rgba(255,255,255,0.04)' }}>
+        <div className='srv-text-col' style={{ background: 'linear-gradient(145deg, #0a1428, #080e20)', padding: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center', borderRight: '1px solid rgba(255,255,255,0.04)' }}>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '1.5rem' }}>
             <div style={{ width: '64px', height: '64px', borderRadius: '18px', background: baseColor + '18', border: '1.5px solid ' + baseColor + '40', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, animation: 'glowPulse 3s ease-in-out infinite', boxShadow: '0 4px 20px ' + baseColor + '25' }}>
