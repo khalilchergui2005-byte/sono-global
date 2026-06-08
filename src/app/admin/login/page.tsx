@@ -81,7 +81,7 @@ export default function AdminLoginPage() {
               onKeyDown={e => e.key === 'Enter' && void handleSubmit()}
               placeholder="admin@agency.com"
               style={{ ...inp, direction: 'ltr' }}
-              autoComplete="email"
+              autoComplete="off"
             />
           </div>
 
@@ -96,7 +96,7 @@ export default function AdminLoginPage() {
               onKeyDown={e => e.key === 'Enter' && void handleSubmit()}
               placeholder="xxxxxxxx"
               style={{ ...inp, direction: 'ltr' }}
-              autoComplete="current-password"
+              autoComplete="off"
             />
           </div>
 
