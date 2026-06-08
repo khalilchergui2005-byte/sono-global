@@ -5,82 +5,147 @@ import { usePathname, useRouter } from 'next/navigation';
 
 const NAV = [
   {
-    section: '\u0639\u0627\u0645',
+    section: 'عام',
     items: [
       {
-        label: '\u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645',
+        label: 'لوحة التحكم',
         href: '/admin/dashboard',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="3" width="7" height="7" rx="1"/>
+            <rect x="14" y="14" width="7" height="7" rx="1"/>
+            <rect x="3" y="14" width="7" height="7" rx="1"/>
+          </svg>
+        ),
       },
     ],
   },
   {
-    section: '\u0627\u0644\u0645\u062d\u062a\u0648\u0649',
+    section: 'المحتوى',
     items: [
       {
-        label: '\u0627\u0644\u0628\u0627\u0642\u0627\u062a \u0627\u0644\u0633\u064a\u0627\u062d\u064a\u0629',
+        label: 'الباقات السياحية',
         href: '/admin/packages',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+        ),
       },
       {
-        label: '\u0627\u0644\u062e\u062f\u0645\u0627\u062a',
+        label: 'الخدمات',
         href: '/admin/services',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/>
+          </svg>
+        ),
       },
       {
-        label: '\u0643\u062a\u0627\u0644\u0648\u062c \u0627\u0644\u0641\u0646\u0627\u062f\u0642',
+        label: 'كتالوج الفنادق',
         href: '/admin/hotels-catalog',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        ),
       },
     ],
   },
   {
-    section: '\u0627\u0644\u0637\u0644\u0628\u0627\u062a',
+    section: 'الطلبات',
     items: [
       {
-        label: '\u0637\u0644\u0628\u0627\u062a \u0627\u0644\u062e\u062f\u0645\u0627\u062a',
+        label: 'طلبات الخدمات',
         href: '/admin/service-requests',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="15" y2="16"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/>
+            <rect x="9" y="3" width="6" height="4" rx="2"/>
+            <line x1="9" y1="12" x2="15" y2="12"/>
+            <line x1="9" y1="16" x2="15" y2="16"/>
+          </svg>
+        ),
       },
       {
-        label: '\u0637\u0644\u0628\u0627\u062a \u0627\u0644\u0627\u0633\u062a\u0634\u0627\u0631\u0629',
+        label: 'طلبات الاستشارة',
         href: '/admin/consultations',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <line x1="16" y1="13" x2="8" y2="13"/>
+            <line x1="16" y1="17" x2="8" y2="17"/>
+          </svg>
+        ),
       },
       {
-        label: '\u0631\u0633\u0627\u0626\u0644 \u0627\u0644\u062a\u0648\u0627\u0635\u0644',
+        label: 'رسائل التواصل',
         href: '/admin/messages',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+          </svg>
+        ),
       },
       {
-        label: '\u062d\u062c\u0648\u0632\u0627\u062a \u0627\u0644\u0637\u064a\u0631\u0627\u0646',
+        label: 'حجوزات الطيران',
         href: '/admin/flights',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>
+          </svg>
+        ),
       },
       {
-        label: '\u062d\u062c\u0648\u0632\u0627\u062a \u0627\u0644\u0641\u0646\u0627\u062f\u0642',
+        label: 'حجوزات الفنادق',
         href: '/admin/hotels',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2"/>
+            <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+          </svg>
+        ),
       },
     ],
   },
   {
-    section: '\u0627\u0644\u0625\u062f\u0627\u0631\u0629',
+    section: 'الإدارة',
     items: [
       {
-        label: '\u0625\u062f\u0627\u0631\u0629 \u0627\u0644\u0639\u0645\u0627\u0644',
+        label: 'إدارة العمال',
         href: '/admin/staff',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+        ),
       },
       {
-        label: '\u0625\u0639\u062f\u0627\u062f\u0627\u062a \u0627\u0644\u0645\u0648\u0642\u0639',
+        label: 'إعدادات الموقع',
         href: '/admin/settings',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+          </svg>
+        ),
       },
       {
-        label: '\u0625\u0639\u062f\u0627\u062f\u0627\u062a \u0627\u0644\u0646\u0638\u0627\u0645',
+        label: 'إعدادات النظام',
         href: '/admin/siteconfig',
-        icon: (<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>),
+        icon: (
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="16 18 22 12 16 6"/>
+            <polyline points="8 6 2 12 8 18"/>
+          </svg>
+        ),
       },
     ],
   },
@@ -107,7 +172,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Close drawer on route change
   useEffect(() => {
     setMobileOpen(false);
   }, [pathname]);
@@ -126,7 +190,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return <>{children}</>;
   }
 
-  const displayName = agencyName || '\u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645';
+  const displayName = agencyName || 'لوحة التحكم';
   const sideW = isMobile ? SIDEBAR_W : (collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_W);
 
   const handleLogout = async () => {
@@ -137,7 +201,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const currentLabel = NAV.flatMap(g => g.items).find(i =>
     pathname === i.href || pathname.startsWith(i.href + '/')
-  )?.label || '\u0644\u0648\u062d\u0629 \u0627\u0644\u062a\u062d\u0643\u0645';
+  )?.label || 'لوحة التحكم';
 
   const sidebarStyle: React.CSSProperties = {
     width: SIDEBAR_W + 'px',
@@ -158,15 +222,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const SidebarContent = () => (
     <aside style={sidebarStyle}>
-      {/* Logo area */}
-      <div style={{ height: '72px', display: 'flex', alignItems: 'center', padding: '0 16px', borderBottom: '1px solid rgba(201,168,76,0.1)', gap: '12px', flexShrink: 0, position: 'relative' }}>
+      <div style={{ height: '72px', display: 'flex', alignItems: 'center', padding: '0 16px', borderBottom: '1px solid rgba(201,168,76,0.1)', gap: '12px', flexShrink: 0 }}>
         <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'linear-gradient(135deg, #C9A84C 0%, #a8862e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#060d24', fontSize: '15px', fontWeight: 900, flexShrink: 0, boxShadow: '0 2px 12px rgba(201,168,76,0.3)', overflow: 'hidden' }}>
           {logoUrl ? <img src={logoUrl} alt="logo" style={{ width: '100%', height: '100%', objectFit: 'cover' }} /> : <span>{displayName.charAt(0)}</span>}
         </div>
         {(!collapsed || isMobile) && (
           <div style={{ overflow: 'hidden', flex: 1 }}>
             <div style={{ color: '#ffffff', fontSize: '13px', fontWeight: 800, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{displayName}</div>
-            <div style={{ color: 'rgba(201,168,76,0.5)', fontSize: '10px', letterSpacing: '2px', marginTop: '2px', whiteSpace: 'nowrap' }}>ADMIN PANEL</div>
+            <div style={{ color: 'rgba(201,168,76,0.5)', fontSize: '10px', letterSpacing: '2px', marginTop: '2px' }}>ADMIN PANEL</div>
           </div>
         )}
         {isMobile ? (
@@ -180,7 +243,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         )}
       </div>
 
-      {/* Nav */}
       <nav style={{ flex: 1, padding: '8px 0', overflowY: 'auto', overflowX: 'hidden' }}>
         {NAV.map(group => (
           <div key={group.section} style={{ marginBottom: '4px' }}>
@@ -208,7 +270,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     transition: 'all 0.15s ease', whiteSpace: 'nowrap', position: 'relative',
                   }}
                 >
-                  <span style={{ flexShrink: 0, opacity: active ? 1 : hovered ? 0.85 : 0.55, transition: 'opacity 0.15s' }}>{item.icon}</span>
+                  <span style={{ flexShrink: 0, opacity: active ? 1 : hovered ? 0.85 : 0.55 }}>{item.icon}</span>
                   {(!collapsed || isMobile) && <span>{item.label}</span>}
                   {active && (!collapsed || isMobile) && (
                     <span style={{ marginRight: 'auto', width: '6px', height: '6px', borderRadius: '50%', background: '#C9A84C', boxShadow: '0 0 6px rgba(201,168,76,0.6)', flexShrink: 0 }} />
@@ -220,15 +282,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ))}
       </nav>
 
-      {/* Footer */}
       <div style={{ padding: '10px', borderTop: '1px solid rgba(255,255,255,0.04)', flexShrink: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
         <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'rgba(255,255,255,0.28)', fontSize: '12px', textDecoration: 'none', padding: '8px 10px', borderRadius: '8px', justifyContent: (collapsed && !isMobile) ? 'center' : 'flex-start', transition: 'all 0.15s' }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-          {(!collapsed || isMobile) && <span>\u0627\u0644\u0639\u0648\u062f\u0629 \u0644\u0644\u0645\u0648\u0642\u0639</span>}
+          {(!collapsed || isMobile) && <span>العودة للموقع</span>}
         </Link>
         <button onClick={handleLogout} disabled={loggingOut} style={{ display: 'flex', alignItems: 'center', gap: '10px', color: 'rgba(239,68,68,0.55)', fontSize: '12px', padding: '8px 10px', borderRadius: '8px', justifyContent: (collapsed && !isMobile) ? 'center' : 'flex-start', background: 'transparent', border: 'none', cursor: loggingOut ? 'not-allowed' : 'pointer', width: '100%', fontFamily: 'Cairo, sans-serif', transition: 'all 0.15s' }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          {(!collapsed || isMobile) && <span>{loggingOut ? '\u062c\u0627\u0631\u064a \u0627\u0644\u062e\u0631\u0648\u062c...' : '\u062a\u0633\u062c\u064a\u0644 \u0627\u0644\u062e\u0631\u0648\u062c'}</span>}
+          {(!collapsed || isMobile) && <span>{loggingOut ? 'جاري الخروج...' : 'تسجيل الخروج'}</span>}
         </button>
       </div>
     </aside>
@@ -237,31 +298,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   return (
     <div style={{ display: 'flex', minHeight: '100vh', background: '#060d24', fontFamily: 'Cairo, sans-serif', direction: 'rtl' }}>
 
-      {/* Mobile overlay */}
       {isMobile && mobileOpen && (
-        <div
-          onClick={() => setMobileOpen(false)}
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 199 }}
-        />
+        <div onClick={() => setMobileOpen(false)} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.6)', zIndex: 199 }} />
       )}
 
       <SidebarContent />
 
-      {/* Main content */}
-      <div style={{
-        flex: 1,
-        marginRight: isMobile ? '0' : sideW + 'px',
-        transition: 'margin 0.28s cubic-bezier(.4,0,.2,1)',
-        display: 'flex',
-        flexDirection: 'column',
-        minHeight: '100vh',
-        background: '#060d24',
-        minWidth: 0,
-      }}>
-        {/* Header */}
-        <header style={{ height: '64px', background: 'rgba(6,13,36,0.96)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', position: 'sticky', top: 0, zIndex: 50, flexShrink: 0, WebkitBackdropFilter: 'blur(16px)' }}>
+      <div style={{ flex: 1, marginRight: isMobile ? '0' : sideW + 'px', transition: 'margin 0.28s cubic-bezier(.4,0,.2,1)', display: 'flex', flexDirection: 'column', minHeight: '100vh', background: '#060d24', minWidth: 0 }}>
+
+        <header style={{ height: '64px', background: 'rgba(6,13,36,0.96)', borderBottom: '1px solid rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 1rem', position: 'sticky', top: 0, zIndex: 50, flexShrink: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            {/* Mobile burger */}
             {isMobile && (
               <button onClick={() => setMobileOpen(true)} style={{ background: 'rgba(201,168,76,0.08)', border: '1px solid rgba(201,168,76,0.15)', borderRadius: '8px', color: 'rgba(201,168,76,0.8)', cursor: 'pointer', width: '36px', height: '36px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -275,7 +321,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {!isMobile && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '7px', background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.15)', borderRadius: '20px', padding: '5px 12px' }}>
                 <div style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px rgba(16,185,129,0.7)' }} />
-                <span style={{ color: 'rgba(16,185,129,0.9)', fontSize: '11px', fontWeight: 700 }}>\u0645\u062a\u0635\u0644</span>
+                <span style={{ color: 'rgba(16,185,129,0.9)', fontSize: '11px', fontWeight: 700 }}>متصل</span>
               </div>
             )}
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -291,7 +337,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             </div>
             <button onClick={handleLogout} disabled={loggingOut} style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.18)', borderRadius: '8px', color: 'rgba(239,68,68,0.75)', fontSize: '12px', fontWeight: 600, padding: isMobile ? '7px 10px' : '7px 14px', cursor: loggingOut ? 'not-allowed' : 'pointer', fontFamily: 'Cairo, sans-serif', transition: 'all 0.15s' }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-              {!isMobile && <span>{loggingOut ? '\u062c\u0627\u0631\u064a...' : '\u062e\u0631\u0648\u062c'}</span>}
+              {!isMobile && <span>{loggingOut ? 'جاري...' : 'خروج'}</span>}
             </button>
           </div>
         </header>
